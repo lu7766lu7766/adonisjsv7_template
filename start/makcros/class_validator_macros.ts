@@ -9,7 +9,10 @@ declare module '@adonisjs/core/http' {
   }
 }
 
-HttpRequest.macro('validateClass', async function <T, U>(this: HttpRequest, ValidatorClass: new () => T) {
+HttpRequest.macro('validateClass', async function <
+  T,
+  U,
+>(this: HttpRequest, ValidatorClass: new () => T) {
   const allRules: Record<string, BaseLiteralType<U, U, U>> = {}
   const allMessages: Record<string, string> = {}
   const instance = new ValidatorClass()
@@ -24,7 +27,7 @@ HttpRequest.macro('validateClass', async function <T, U>(this: HttpRequest, Vali
       _.mapKeys(messages, (_v: unknown, rk: string) => `${prop}.${rk}`)
     )
   }
-  const validator = vine.compile(vine.object(allRules))
+  const validator = vine.create(allRules)
   validator.messagesProvider = new SimpleMessagesProvider(allMessages)
 
   return this.validateUsing(validator) as T
