@@ -1,32 +1,18 @@
-# Validator & Model 範例
+# Model (模型) 規範與範例
 
-本文件提供 KSE 專案中 Class-based Validator 宣告、Lucid Model、關聯與 Hook 交易處理之標準範例。
+## 開發規範
+
+- **命名策略**：必須設定 `public static namingStrategy = new SnakeCaseNamingStrategy()`，確保 JavaScript 的 camelCase 屬性在資料庫中對應為 snake_case。
+- **額外欄位序列化**：設定 `public serializeExtras = true`。
+- **欄位宣告**：使用 `declare` 宣告屬性，並掛載對應裝飾器（如 `@column({ isPrimary: true })`、`@column()`、`@column.dateTime({ autoCreate: true })`）。
+- **計算屬性**：使用 `@computed()` 裝飾器定義唯讀屬性，變數名稱採用 `snake_case` (例如 `is_admin`)。
+- **模型關聯**：使用 `@belongsTo`、`@hasMany` 等裝飾器，並宣告類型為 `BelongsTo<typeof TargetModel>`。
+- **Model Hooks**：使用 `@beforeSave()` 或 `@beforeCreate()` 等生命週期 Hook。在 Hook 中存取資料庫時應使用 `model.$trx` 以確保處於同一個交易中。
 
 ---
 
-### 1. Class-based Validator 宣告 (`app/validators/common.ts`)
-```typescript
-import { CommonCodes } from '#constants/api_codes/common'
-import { validate } from '#start/makcros/class_validator_macros'
-import vine from '@vinejs/vine'
+## 程式碼範例 (`app/models/session.ts`)
 
-export class PaginateValidator {
-  // 用 declare 宣告，利用 @validate 裝飾器綁定 VineJS schema
-  @validate(vine.number(), {
-    number: CommonCodes.PAGINATE_ERROR.toString(),
-    required: CommonCodes.PAGINATE_ERROR.toString(),
-  })
-  declare per_page: number
-
-  @validate(vine.number(), {
-    number: CommonCodes.PAGINATE_ERROR.toString(),
-    required: CommonCodes.PAGINATE_ERROR.toString(),
-  })
-  declare page: number
-}
-```
-
-### 2. Model 定義與 Hook 交易處理 (`app/models/session.ts`)
 ```typescript
 import { DateTime } from 'luxon'
 import { BaseModel, column, belongsTo, beforeSave, SnakeCaseNamingStrategy } from '@adonisjs/lucid/orm'

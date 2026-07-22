@@ -1,10 +1,22 @@
-# Vue (Pug + script setup + Hooks) 範例
+# Vue (Composition API + Pug) 規範與範例
 
-本文件提供 KSE 專案中 Vue 3 + Pug + Vant UI 以及自訂 Hooks (`useList`, `useApi`) 與後端整合之標準範例。
+## 開發規範
+
+- **Pug 模板**：`<template lang="pug">`，使用縮排結構，Class 定義寫法為 `div(class="...")`。
+- **TypeScript 腳本**：`<script setup lang="ts">`。
+- **元件命名**：自訂元件與排版元件使用 PascalCase (如 `Layout`, `DataTable`, `Pagination`, `Model`)。
+- **UI 元件庫**：表單與互動按鈕使用 Vant 提供的元件 (如 `Field`, `Button`, `RadioGroup`, `Radio`)。
+- **自訂 Hooks (Composition API)**：
+  - 統一使用自訂的 `useList(useApi("模組"), searchForm)` 來處理清單 CRUD、分頁、搜尋重新整理、編輯與刪除彈窗狀態。
+  - `useApi("模組")` 為 API 工廠方法，取得對應模組的 Axios 請求函數。
+- **API 請求與認證**：
+  - 前端透過自訂的 `request(url, method, data)` 發送 Axios 請求，其會自動在 Header 帶入 `Authorization: Bearer ${token}`。
+  - 請求成功且 response code 包含 0 時，回傳 data。若 code 包含 401 則利用 Inertia `router.visit("/login")` 跳轉。其餘 code 則丟出 Error 並 alert 錯誤訊息。
 
 ---
 
-### 1. 前端 CRUD 頁面 (`inertia/pages/admin.vue`)
+## 程式碼範例 (`inertia/pages/admin.vue`)
+
 ```html
 <template lang="pug">
 Layout

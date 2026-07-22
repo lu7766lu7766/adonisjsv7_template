@@ -1,10 +1,19 @@
-# Exception & Response & Middleware 範例
+# Exception (異常處理) 規範與範例
 
-本文件提供 KSE 專案中自訂 ApiException、統一 API 格式化中介軟體之標準範例。
+## 開發規範
+
+- **自訂 ApiException**：當業務邏輯出錯或無權限時，丟出 `new ApiException(status_code, message)`。
+- **全域 HttpExceptionHandler**：定義在 `app/exceptions/handler.ts`。它會：
+  - 攔截 `E_VALIDATION_ERROR` (驗證錯誤)，提取自訂的驗證錯誤碼，並將其組織為 `code` 陣列後重新拋出 `{ code, message }`。
+  - 將 `ApiException` 轉換為 API 標準錯誤格式。
+  - 針對 404 及 500 等錯誤，若為一般網頁請求，則利用 `inertia.render` 指向錯誤頁面。
 
 ---
 
+## 程式碼範例
+
 ### 1. 自訂 ApiException (`app/exceptions/api_exception.ts`)
+
 ```typescript
 import { Exception } from '@adonisjs/core/exceptions'
 
@@ -15,7 +24,8 @@ export class ApiException extends Exception {
 }
 ```
 
-### 2. 異常攔截與錯誤碼解析處理器 (`app/exceptions/handler.ts`)
+### 2. 異常攔截處理器 (`app/exceptions/handler.ts`)
+
 ```typescript
 import { HttpContext, ExceptionHandler } from '@adonisjs/core/http'
 import { CommonCodes } from '#constants/api_codes/common'
@@ -55,33 +65,6 @@ export default class HttpExceptionHandler extends ExceptionHandler {
     }
 
     throw { code, message }
-  }
-}
-```
-
-### 3. 統一格式化 Response Middleware (`app/middleware/api_format_middleware.ts`)
-```typescript
-import type { HttpContext } from '@adonisjs/core/http'
-import type { NextFn } from '@adonisjs/core/types/http'
-
-export default class ApiFormatMiddleware {
-  async handle(ctx: HttpContext, next: NextFn) {
-    const start = Date.now()
-    try {
-      await next()
-      // 成功回應統一包裝，HTTP Code 200
-      return ctx.response.status(200).json({
-        code: [0],
-        data: ctx.response.lazyBody.content?.[0],
-        time: `${Date.now() - start} ms`,
-      })
-    } catch (error) {
-      // 異常回應統一包裝，HTTP Code 200，錯誤結構從 ExceptionHandler 拋出
-      return ctx.response.status(200).json({
-        ...error,
-        time: `${Date.now() - start} ms`,
-      })
-    }
   }
 }
 ```
