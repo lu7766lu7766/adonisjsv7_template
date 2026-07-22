@@ -1,0 +1,80 @@
+name: MySQL Backup
+
+on:
+  # schedule:
+  #   - cron: "0 18 * * *" # 每天凌晨2點
+  workflow_dispatch: # 手動觸發
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install MariaDB Client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mariadb-client
+
+      - name: Backup Database
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_DATABASE }}
+        run: |
+          set -e
+          BACKUP_DATE=$(date +%Y%m%d)
+          echo "BACKUP_DATE=$BACKUP_DATE" >> $GITHUB_ENV
+          mysqldump -h "$DB_HOST" -P "${DB_PORT}" -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" > backup_${BACKUP_DATE}.sql
+          gzip backup_${BACKUP_DATE}.sql
+          ls -la backup_*.sql.gz
+
+      - name: Upload Backup
+        uses: actions/upload-artifact@v4
+        with:
+          name: mariadb-backup-${{ env.BACKUP_DATE }}
+          path: backup_${{ env.BACKUP_DATE }}.sql.gz
+          retention-days: 7 # 自動刪除超過 7 天的備份
+
+
+######## PostgreSQL
+# name: PostgreSQL Backup
+
+# on:
+#   schedule:
+#     - cron: "0 18 * * *" # 每天 UTC 18:00 (台灣時間凌晨 2:00)
+#   workflow_dispatch:  # 手動觸發
+
+# jobs:
+#   backup:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Install PostgreSQL Client
+#         run: |
+#           sudo apt-get update
+#           sudo apt-get install -y postgresql-client
+
+#       - name: Backup Database
+#         env:
+#           PGHOST: ${{ secrets.DB_HOST }}
+#           PGPORT: ${{ secrets.DB_PORT }}
+#           PGUSER: ${{ secrets.DB_USER }}
+#           PGPASSWORD: ${{ secrets.DB_PASSWORD }}
+#           PGDATABASE: ${{ secrets.DB_DATABASE }}
+#         run: |
+#           set -e
+#           BACKUP_DATE=$(date +%Y%m%d)
+#           echo "BACKUP_DATE=$BACKUP_DATE" >> $GITHUB_ENV
+
+#           # 使用 pg_dump 匯出資料庫並進行壓縮
+#           pg_dump -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" > backup_${BACKUP_DATE}.sql
+#           gzip backup_${BACKUP_DATE}.sql
+
+#           ls -la backup_*.sql.gz
+
+#       - name: Upload Backup
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: postgres-backup-${{ env.BACKUP_DATE }}
+#           path: backup_${{ env.BACKUP_DATE }}.sql.gz
+#           retention-days: 7 # 自動刪除超過 7 天的備份
