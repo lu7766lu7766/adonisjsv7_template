@@ -1,5 +1,12 @@
 # Validator (驗證器) 規範與範例
 
+## ⚖️ 最高憲法原則
+
+- **所有接收 Request 參數必須經過 `validateClass`**：
+  在 Controller 或 Route Handler 中，讀取前端傳來的任何 Query、Body 或 Params 參數，**必須 100% 透過 `await request.validateClass(ValidatorClass)` 進行驗證**。嚴禁使用 `request.input()` / `request.qs()` 等繞過驗證。
+
+---
+
 ## 開發規範
 
 - **Class-based 驗證**：本專案採用自訂的 Class-based 驗證機制。透過裝飾器將 VineJS 的 schema 與錯誤訊息綁定於 Class 屬性上。

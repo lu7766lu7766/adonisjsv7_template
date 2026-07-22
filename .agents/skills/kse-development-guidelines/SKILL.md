@@ -9,6 +9,14 @@ description: KSE 專案開發規範手冊。當開發或維護 KSE 專案，撰�
 
 ---
 
+## ⚖️ 最高憲法原則 (Mandatory Rule)
+
+1. **接收參數必須使用 `validateClass`**：
+   - 本專案所有 HTTP 請求接收參數（Query / Body / Params），**必須透過 `await request.validateClass(ValidatorClassName)` 進行驗證與提取**。
+   - **嚴禁**直接呼叫 `request.input()`, `request.qs()`, `request.body()` 或 `request.all()` 繞過 Class-based 驗證。
+
+---
+
 ## 📚 各主題獨立說明與範例導覽
 
 - **Router (路由)** ➡️ [router.md](./references/router.md)
@@ -36,7 +44,7 @@ description: KSE 專案開發規範手冊。當開發或維護 KSE 專案，撰�
 - **模板引擎**：Pug (`lang="pug"`)
 - **樣式庫**：Tailwind CSS + Vant UI (行動端元件庫)
 - **資料庫 ORM**：Lucid ORM (MySQL 2)
-- **資料驗證**：VineJS
+- **資料驗證**：VineJS (配合自訂 Class-based Decorator & validateClass 巨集)
 
 ---
 
@@ -65,7 +73,7 @@ description: KSE 專案開發規範手冊。當開發或維護 KSE 專案，撰�
 
 ### 3.2 Controller (控制器)
 - **依賴注入**：掛載 `@inject()` 並在建構子宣告 `private service: UserService`。
-- **資料驗證與交易**：使用 `request.validateClass()` 與 `db.transaction()`，直接 `return` 資料。
+- **資料驗證與交易**：**必須**使用 `request.validateClass(ValidatorClass)` 提取驗證後資料，寫入操作使用 `db.transaction()`，直接 `return` 資料。
 
 ### 3.3 Validators (驗證器)
 - **Class-based 驗證**：宣告欄位 `declare` 並使用 `@validate(schema, { errorMsg: CommonCodes.XXX.toString() })`。

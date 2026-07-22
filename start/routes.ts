@@ -10,9 +10,10 @@
 import { middleware } from '#start/kernel'
 import { controllers } from '#generated/controllers'
 import router from '@adonisjs/core/services/router'
+import { ApiTestValidator } from '#validators/api'
 
 router.on('/').renderInertia('home', {}).as('home')
-router.on('/demo').renderInertia('demo').as('demo')
+router.on('/demo').renderInertia('demo', {}).as('demo')
 
 router
   .group(() => {
@@ -29,3 +30,11 @@ router
     router.post('logout', [controllers.Session, 'destroy'])
   })
   .use(middleware.auth())
+
+router.get('api', async ({ request }) => {
+  const { test } = await request.validateClass(ApiTestValidator)
+  if (typeof test !== 'undefined' && test !== '') {
+    return test
+  }
+  return 'ok'
+})

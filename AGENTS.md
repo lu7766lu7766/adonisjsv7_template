@@ -9,7 +9,7 @@
 在進行本專案的開發、重構或除錯時，請務必參閱並遵從專屬 Skill：
 👉 **`kse-development-guidelines`** (`.agents/skills/kse-development-guidelines/SKILL.md`)
 
-詳細程式碼範例已按主題獨立拆分，請參閱 Skill 內的參考檔案：
+詳細程式碼範例與最高憲法規範請參閱 Skill 內的參考檔案：
 - [Router (路由)](./.agents/skills/kse-development-guidelines/references/router.md)
 - [Controller (控制器)](./.agents/skills/kse-development-guidelines/references/controller.md)
 - [Service (服務層)](./.agents/skills/kse-development-guidelines/references/service.md)
