@@ -9,17 +9,15 @@ export default class extends BaseSeeder {
       // 建立一個範例 User
       const user = await User.create(
         {
-          fullName: 'Demo User',
-          email: 'demo@example.com',
-          password: 'secret_password_123',
+          name: 'Root User',
+          username: 'root',
+          password: 'root',
         },
         { client: trx }
       )
 
       // 使用 TaskFactory 關聯該 User，批次建立 5 個隨機 Task
-      await TaskFactory.merge({ userId: user.id })
-        .client(trx)
-        .createMany(5)
+      await TaskFactory.merge({ userId: user.id }).client(trx).createMany(5)
     })
   }
 }
