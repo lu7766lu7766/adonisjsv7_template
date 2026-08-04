@@ -8,15 +8,14 @@
 */
 
 import { middleware } from '#start/kernel'
-import { controllers } from '#generated/controllers'
 import router from '@adonisjs/core/services/router'
-import { ApiTestValidator } from '#validators/api'
 import UsersController from '#controllers/users_controller'
 
 router.on('/').renderInertia('home', {}).as('home')
 router.on('/demo').renderInertia('demo', {}).as('demo')
 
 router.post('api/login', [UsersController, 'login'])
+router.get('api/self', [UsersController, 'self']) //.use(middleware.auth())
 
 // Restful API
 // GET 查詢

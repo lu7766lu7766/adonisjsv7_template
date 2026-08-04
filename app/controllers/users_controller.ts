@@ -8,4 +8,8 @@ export default class UsersController {
     // return user
     return User.accessTokens.create(user)
   }
+
+  self({ auth }: HttpContext) {
+    return auth.user
+  }
 }
