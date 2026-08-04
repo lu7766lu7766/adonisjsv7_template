@@ -16,7 +16,7 @@ router.on('/demo').renderInertia('demo', {}).as('demo')
 
 router.post('api/login', [UsersController, 'login'])
 router.get('api/self', [UsersController, 'self']) //.use(middleware.auth())
-
+router.post('api/logout', [UsersController, 'logout'])
 // Restful API
 // GET 查詢
 // POST 新增

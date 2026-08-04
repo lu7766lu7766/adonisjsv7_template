@@ -12,4 +12,8 @@ export default class UsersController {
   self({ auth }: HttpContext) {
     return auth.user
   }
+
+  logout({ auth }: HttpContext) {
+    return auth.use('api').invalidateToken()
+  }
 }
