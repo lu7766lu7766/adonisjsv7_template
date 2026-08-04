@@ -4,6 +4,6 @@ import Task from '#models/task'
 
 export default class TasksController {
   list() {
-    return Task.query()
+    return Task.query().preload('user')
   }
 }
