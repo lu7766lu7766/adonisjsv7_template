@@ -73,6 +73,7 @@ export default defineConfig({
     () => import('#start/routes'),
     () => import('#start/kernel'),
     () => import('#start/validator'),
+    () => import('#start/events'),
     () => import('#start/makcros/lucid_query_builder_macros'),
     () => import('#start/makcros/class_validator_macros'),
   ],
