@@ -31,10 +31,9 @@ router
   })
   .use(middleware.auth())
 
-router.get('api', async ({ request }) => {
-  const { test } = await request.validateClass(ApiTestValidator)
-  if (typeof test !== 'undefined' && test !== '') {
-    return test
-  }
-  return 'ok'
-})
+// Restful API
+// GET 查詢
+// POST 新增
+// PUT 更新
+// DELETE 刪除
+router.post('api', () => 'ok')

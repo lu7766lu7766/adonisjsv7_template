@@ -27,3 +27,4 @@ yarn-error.log
 
 # Temporary cache folders
 .npm_cache
+.openpost
