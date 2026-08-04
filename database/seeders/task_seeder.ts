@@ -9,7 +9,7 @@ export default class extends BaseSeeder {
       // 建立一個範例 User
       const user = await User.create(
         {
-          name: 'Root User',
+          full_name: 'Root User',
           username: 'root',
           password: 'root',
         },
