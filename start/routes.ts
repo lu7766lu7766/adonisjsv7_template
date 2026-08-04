@@ -10,6 +10,7 @@
 import { middleware } from '#start/kernel'
 import router from '@adonisjs/core/services/router'
 import UsersController from '#controllers/users_controller'
+import TasksController from '#controllers/tasks_controller'
 
 router.on('/').renderInertia('home', {}).as('home')
 router.on('/demo').renderInertia('demo', {}).as('demo')
@@ -24,6 +25,11 @@ router
         router.post('logout', [UsersController, 'logout'])
       })
       .use(middleware.auth())
+    router
+      .group(() => {
+        router.get('list', [TasksController, 'list'])
+      })
+      .prefix('tasks')
   })
   .prefix('api')
   .use(middleware.api_format())
