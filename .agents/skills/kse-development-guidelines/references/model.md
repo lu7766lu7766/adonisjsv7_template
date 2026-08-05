@@ -8,6 +8,7 @@
 - **計算屬性**：使用 `@computed()` 裝飾器定義唯讀屬性，變數名稱採用 `snake_case` (例如 `is_admin`)。
 - **模型關聯**：使用 `@belongsTo`、`@hasMany` 等裝飾器，並宣告類型為 `BelongsTo<typeof TargetModel>`。
 - **Model Hooks**：使用 `@beforeSave()` 或 `@beforeCreate()` 等生命週期 Hook。在 Hook 中存取資料庫時應使用 `model.$trx` 以確保處於同一個交易中。
+- **密碼自動加密**：`User` 模型在建立 (`User.create()`) 或儲存變更密碼時會自動進行 Hash 加密，**不需要手動加密**。
 
 ---
 
