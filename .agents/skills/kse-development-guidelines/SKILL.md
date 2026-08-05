@@ -79,8 +79,8 @@ description: KSE 專案開發規範手冊。當開發或維護 KSE 專案，撰�
 - **Class-based 驗證**：宣告欄位 `declare` 並使用 `@validate(schema, { errorMsg: CommonCodes.XXX.toString() })`。
 
 ### 3.4 Service (服務層)
-- **標準 CRUD 方法**：大部分模組包含 `list` (列表)、`total` (總筆數)、`create` (新增)、`update` (更新)、`delete` (刪除) 等方法，實際可依業務需求調整。
-- **查詢複用 (where_builder)**：`list` 與 `total` 方法共用 `private xxx_where_builder(...)` 私有方法組裝查詢條件，判斷選填參數時統一使用 `typeof variable != 'undefined'`。
+- **標準 CRUD 方法**：大部分模組包含 `list` (列表)、`create` (新增)、`update` (更新)、`delete` (刪除) 等方法；**`total` (總筆數) 方法僅在有分頁需求時才需要**，實際可依業務需求調整。
+- **查詢複用 (where_builder)**：有分頁需求且同時包含 `list` 與 `total` 方法時，兩者共用 `private xxx_where_builder(...)` 私有方法組裝查詢條件，判斷選填參數時統一使用 `typeof variable != 'undefined'`。
 - **密碼處理**：`User.create()` 或建立使用者時，`User` 模型會自動將 `password` 進行 Hash 加密，**無需手動加密**。
 
 ### 3.5 Model (模型)
