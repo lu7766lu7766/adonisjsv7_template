@@ -11,7 +11,7 @@ const corsConfig = defineConfig({
   /**
    * Enable or disable CORS handling globally.
    */
-  enabled: false,
+  enabled: true,
 
   /**
    * In development, allow every origin to simplify local front/backend setup.
